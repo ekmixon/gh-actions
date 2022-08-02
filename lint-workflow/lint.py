@@ -43,11 +43,11 @@ def lint(filename):
 
                 # If the job has environment variables defined, then make sure they start with an underscore.
                 if "env" in job:
-                    for k in job["env"].keys():
-                        if k[0] != "_":
-                            findings.append(
-                                f"- Environment variable '{k}' of job key '{job_key}' does not start with an underscore."
-                            )
+                    findings.extend(
+                        f"- Environment variable '{k}' of job key '{job_key}' does not start with an underscore."
+                        for k in job["env"].keys()
+                        if k[0] != "_"
+                    )
 
                 # Loop through steps in job.
                 steps = job["steps"]
@@ -87,7 +87,7 @@ def lint(filename):
                                 f"- Step {str(i)} of job key '{job_key}' does not have a valid action hash. (missing '@' character)"
                             )
 
-    if len(findings) > 0:
+    if findings:
         print("#", filename)
         for finding in findings:
             print(finding)
